@@ -54,6 +54,9 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit_version"
+
+    implementation "io.reactivex.rxjava3:rxkotlin:3.0.1"
 
     testImplementation 'junit:junit:4.13.2'
 
