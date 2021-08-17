@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.rokas.barokas.R
-import com.rokas.barokas.screen.details.view.DetailsFragment
 import com.rokas.barokas.screen.posts.viewmodel.PostsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -36,13 +35,13 @@ class PostsFragment : Fragment() {
 
         setUpObservers()
 
-        disposable.add(viewModel.onScreenStart())
+        disposable.add(viewModel.getPosts())
     }
 
     private fun setUpObservers() {
-        viewModel.getMessageResIdLiveData().observe(
+        viewModel.getPostsLiveData().observe(
             viewLifecycleOwner,
-            { response -> Log.e("xx", "" + response) }
+            { response -> Log.e("xx", "" + response.size) }
         )
     }
 
