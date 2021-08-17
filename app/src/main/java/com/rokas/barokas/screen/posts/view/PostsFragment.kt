@@ -50,8 +50,4 @@ class PostsFragment : Fragment() {
         disposable.clear()
         super.onStop()
     }
-
-    companion object {
-        fun newInstance() = DetailsFragment()
-    }
 }

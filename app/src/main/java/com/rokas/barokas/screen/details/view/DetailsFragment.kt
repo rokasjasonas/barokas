@@ -16,8 +16,4 @@ class DetailsFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
-
-    companion object {
-        fun newInstance() = DetailsFragment()
-    }
 }
