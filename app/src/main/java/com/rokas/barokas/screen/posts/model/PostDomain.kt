@@ -5,4 +5,11 @@ data class PostDomain(
     val id: Int,
     val title: String,
     val body: String
-)
+) {
+    fun toEntity() = PostEntity(
+        userId,
+        id,
+        title,
+        body
+    )
+}
