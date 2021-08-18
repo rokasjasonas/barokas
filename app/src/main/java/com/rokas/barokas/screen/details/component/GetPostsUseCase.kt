@@ -1,4 +1,4 @@
-package com.rokas.barokas.screen.posts.component
+package com.rokas.barokas.screen.details.component
 
 import com.rokas.barokas.screen.posts.model.PostDomain
 import com.rokas.barokas.screen.posts.model.PostsLocalRepository
