@@ -10,6 +10,7 @@ import com.rokas.barokas.databinding.FragmentPostsBinding
 import com.rokas.barokas.screen.posts.viewmodel.PostsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts) {
@@ -45,7 +46,9 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
     }
 
     private fun setUpRecyclerView() {
-        postsAdapter = PostsRecyclerAdapter()
+        postsAdapter = PostsRecyclerAdapter {
+            Timber.e("xx item clicked " + it)
+        }
         binding.postsRecyclerView.adapter = postsAdapter
     }
 }
