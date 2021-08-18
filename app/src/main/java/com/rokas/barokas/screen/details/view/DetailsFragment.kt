@@ -25,11 +25,17 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_d
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpPullToRefresh()
         val postId = getPostId()
         getScreenDetails(postId)
     }
 
+    private fun setUpPullToRefresh() {
+        binding.refreshLayout.isEnabled = false
+    }
+
     private fun getScreenDetails(postId: Int?) {
+        binding.refreshLayout.isRefreshing = true
         postId?.let { disposable.add(viewModel.getScreenDetails(postId)) }
     }
 
@@ -40,11 +46,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_d
             viewLifecycleOwner,
             { post ->
                 binding.titleTextView.text = post.title
-                binding.bodyTextView.text = post.body
+                binding.bodyTextView.text = post.body + post.body+ post.body+ post.body+ post.body+ post.body+ post.body+ post.body+ post.body+ post.body+ post.body
                 imageLoader.loadRoundedImage(
                     binding.imageView,
                     BuildConfig.IMAGES_URL + post.userId
-                )
+                ) {
+                    binding.refreshLayout.isRefreshing = false
+                }
             }
         )
     }
