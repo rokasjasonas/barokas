@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BaRokas</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+    <string name="error">Error</string>
+    <string name="error_message">Error occurred. Please try again later.</string>
 </resources>

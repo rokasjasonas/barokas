@@ -1,5 +1,6 @@
 package com.rokas.barokas.screen.posts.view
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -16,6 +17,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts) {
     private val viewModel by viewModels<PostsViewModel>()
     private var disposable = CompositeDisposable()
+    private var errorDialog: AlertDialog? = null
     private lateinit var postsAdapter: PostsRecyclerAdapter
 
     override fun bindView(view: View) = FragmentPostsBinding.bind(view)
@@ -24,8 +26,6 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
         setUpPullToRefresh()
-
-        setUpObservers()
         getPosts()
     }
 
@@ -42,10 +42,37 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
         viewModel.getPostsLiveData().observe(
             viewLifecycleOwner,
             { posts ->
-                binding.refreshLayout.isRefreshing = false
+                updateRefreshState(false)
                 postsAdapter.updateList(posts)
             }
         )
+
+        viewModel.getErrorLiveData().observe(
+            viewLifecycleOwner,
+            {
+                updateRefreshState(false)
+                showErrorDialog()
+            }
+        )
+    }
+
+    private fun showErrorDialog() {
+        errorDialog?.dismiss()
+        val dialogBuilder = AlertDialog.Builder(context).apply {
+            setTitle(R.string.error)
+            setMessage(R.string.error_message)
+            setPositiveButton(R.string.retry) { _, _ ->
+                errorDialog?.dismiss()
+                disposable.add(viewModel.getPosts())
+            }
+            setNegativeButton(R.string.cancel) { _, _ -> }
+            create()
+        }
+        errorDialog = dialogBuilder.show()
+    }
+
+    private fun updateRefreshState(isRefreshing: Boolean) {
+        binding.refreshLayout.isRefreshing = isRefreshing
     }
 
     override fun onStop() {

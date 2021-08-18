@@ -8,9 +8,9 @@ import javax.inject.Inject
 
 class GetPostsUseCase @Inject constructor(
     private val postsRemoteRepository: PostsRemoteRepository,
-    private val postsLocalRepository: PostsLocalRepository,
+    private val postsLocalRepository: PostsLocalRepository
 ) {
-    fun getPosts(): Observable<List<PostDomain>> = Observable.merge(
+    fun getPosts(): Observable<List<PostDomain>> = Observable.mergeDelayError(
         postsLocalRepository.getPosts(),
         postsRemoteRepository.getPosts()
             .flatMapCompletable { postsLocalRepository.insertAll(it) }
