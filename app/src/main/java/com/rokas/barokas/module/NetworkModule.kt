@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.rokas.barokas.BuildConfig
 import com.rokas.barokas.component.network.PostsService
 import com.rokas.barokas.component.network.RetrofitFactory
+import com.rokas.barokas.component.network.UsersService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,6 +24,11 @@ class NetworkModule {
     @Provides
     fun provideNewsService(retrofit: Retrofit): PostsService =
         retrofit.create(PostsService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideUsersService(retrofit: Retrofit): UsersService =
+        retrofit.create(UsersService::class.java)
 
     @Singleton
     @Provides

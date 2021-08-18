@@ -55,6 +55,14 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_d
                 }
             }
         )
+
+        viewModel.getUserLiveData().observe(
+            viewLifecycleOwner,
+            { user ->
+                binding.usernameTextView.text = user.name
+                binding.refreshLayout.isRefreshing = false
+            }
+        )
     }
 
     override fun onStop() {

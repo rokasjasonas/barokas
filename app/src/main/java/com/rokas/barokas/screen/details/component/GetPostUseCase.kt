@@ -8,5 +8,5 @@ import javax.inject.Inject
 class GetPostUseCase @Inject constructor(
     private val postsLocalRepository: PostsLocalRepository
 ) {
-    fun getPosts(postId: Int): Single<PostDomain> = postsLocalRepository.getPost(postId)
+    fun getPost(postId: Int): Single<PostDomain> = postsLocalRepository.getPost(postId)
 }

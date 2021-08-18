@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rokas.barokas.module.Main
 import com.rokas.barokas.screen.details.component.GetPostUseCase
+import com.rokas.barokas.screen.details.component.GetUserUseCase
+import com.rokas.barokas.screen.details.model.UserDomain
 import com.rokas.barokas.screen.posts.model.PostDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Scheduler
@@ -15,16 +17,32 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     private val getPostUseCase: GetPostUseCase,
+    private val getUserUseCase: GetUserUseCase,
     @Main private val mainScheduler: Scheduler
 ) : ViewModel() {
     private val mutablePost = MutableLiveData<PostDomain>()
+    private val mutableUser = MutableLiveData<UserDomain>()
 
-    fun getScreenDetails(postId: Int): Disposable = getPostUseCase.getPosts(postId)
+    fun getScreenDetails(postId: Int): Disposable {
+        return getPostUseCase.getPost(postId)
+            .observeOn(mainScheduler)
+            .subscribe(
+                { result ->
+                    mutablePost.value = result
+                    getUser(result.userId)
+                },
+                { Timber.e(it) }
+            )
+    }
+
+    fun getUser(userId: Int): Disposable = getUserUseCase.getUser(userId)
         .observeOn(mainScheduler)
         .subscribe(
-            { result -> mutablePost.value = result },
+            { result -> mutableUser.value = result },
             { Timber.e(it) }
         )
 
     fun getPostLiveData() = mutablePost as LiveData<PostDomain>
+
+    fun getUserLiveData() = mutableUser as LiveData<UserDomain>
 }
