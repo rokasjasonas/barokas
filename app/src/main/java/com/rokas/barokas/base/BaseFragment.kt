@@ -22,14 +22,4 @@ abstract class BaseFragment<VBinding : ViewBinding>(layoutId: Int) : Fragment(la
     open fun setUpViews() = Unit
 
     open fun setUpObservers() = Unit
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                parentFragmentManager.popBackStack()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }
