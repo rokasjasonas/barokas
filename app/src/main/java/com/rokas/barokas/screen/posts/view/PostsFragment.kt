@@ -23,15 +23,28 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
+        setUpPullToRefresh()
 
         setUpObservers()
+        getPosts()
+    }
+
+    private fun setUpPullToRefresh() {
+        binding.refreshLayout.setOnRefreshListener { getPosts() }
+    }
+
+    private fun getPosts() {
+        binding.refreshLayout.isRefreshing = true
         disposable.add(viewModel.getPosts())
     }
 
     override fun setUpObservers() {
         viewModel.getPostsLiveData().observe(
             viewLifecycleOwner,
-            { posts -> postsAdapter.updateList(posts) }
+            { posts ->
+                binding.refreshLayout.isRefreshing = false
+                postsAdapter.updateList(posts)
+            }
         )
     }
 
