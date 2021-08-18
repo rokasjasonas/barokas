@@ -17,6 +17,8 @@ import javax.inject.Inject
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_details) {
     private val viewModel by viewModels<DetailsViewModel>()
     private var disposable = CompositeDisposable()
+    private var finishedLoadingImage = false
+    private var finishedLoadingUser = false
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -51,7 +53,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_d
                     binding.imageView,
                     BuildConfig.IMAGES_URL + post.userId
                 ) {
-                    binding.refreshLayout.isRefreshing = false
+                    finishedLoadingImage = true
+                    hideProgress()
                 }
             }
         )
@@ -59,10 +62,17 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_d
         viewModel.getUserLiveData().observe(
             viewLifecycleOwner,
             { user ->
+                finishedLoadingUser = true
                 binding.usernameTextView.text = user.name
-                binding.refreshLayout.isRefreshing = false
+                hideProgress()
             }
         )
+    }
+
+    private fun hideProgress() {
+        if (finishedLoadingImage && finishedLoadingUser) {
+            binding.refreshLayout.isRefreshing = false
+        }
     }
 
     override fun onStop() {
