@@ -46,7 +46,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_d
             viewLifecycleOwner,
             { post ->
                 binding.titleTextView.text = post.title
-                binding.bodyTextView.text = post.body + post.body+ post.body+ post.body+ post.body+ post.body+ post.body+ post.body+ post.body+ post.body+ post.body
+                binding.bodyTextView.text = post.body
                 imageLoader.loadRoundedImage(
                     binding.imageView,
                     BuildConfig.IMAGES_URL + post.userId
