@@ -17,6 +17,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "BACKEND_URL", "\"https://jsonplaceholder.typicode.com/\""
+        buildConfigField "String", "IMAGES_URL", "\"https://source.unsplash.com/collection/542909/?sig=\""
     }
 
     buildTypes {
