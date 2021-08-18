@@ -7,10 +7,10 @@ import androidx.navigation.Navigation
 import com.rokas.barokas.R
 import com.rokas.barokas.base.BaseFragment
 import com.rokas.barokas.databinding.FragmentPostsBinding
+import com.rokas.barokas.screen.details.view.DetailsFragment.Companion.KEY_POST_ID
 import com.rokas.barokas.screen.posts.viewmodel.PostsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import timber.log.Timber
 
 @AndroidEntryPoint
 class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts) {
@@ -23,11 +23,6 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
-
-        view.setOnClickListener {
-            Navigation.findNavController(view)
-                .navigate(R.id.action_postsFragment_to_detailsFragment)
-        }
 
         setUpObservers()
         disposable.add(viewModel.getPosts())
@@ -46,8 +41,14 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
     }
 
     private fun setUpRecyclerView() {
-        postsAdapter = PostsRecyclerAdapter {
-            Timber.e("xx item clicked " + it)
+        postsAdapter = PostsRecyclerAdapter { post ->
+            view?.let {
+                Navigation.findNavController(it)
+                    .navigate(
+                        R.id.action_postsFragment_to_detailsFragment,
+                        Bundle().apply { putInt(KEY_POST_ID, post.id) }
+                    )
+            }
         }
         binding.postsRecyclerView.adapter = postsAdapter
     }
