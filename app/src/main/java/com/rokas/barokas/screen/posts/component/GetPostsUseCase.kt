@@ -10,11 +10,14 @@ class GetPostsUseCase @Inject constructor(
     private val postsRemoteRepository: PostsRemoteRepository,
     private val postsLocalRepository: PostsLocalRepository
 ) {
-    fun getPosts(): Observable<List<PostDomain>> = Observable.mergeDelayError(
-        postsLocalRepository.getPosts().onErrorComplete(),
-        postsRemoteRepository.getPosts()
-            .flatMapCompletable { postsLocalRepository.insertAll(it) }
-            .toObservable<List<PostDomain>>()
-            .take(1)
+    fun getPosts(): Observable<List<PostDomain>> = Observable.concatDelayError(
+        listOf(
+            postsLocalRepository.getPosts(),
+            postsRemoteRepository.getPosts()
+                .flatMapObservable {
+                    postsLocalRepository.insertAll(it).andThen(Observable.just(it))
+                }
+                .take(1)
+        )
     )
 }
