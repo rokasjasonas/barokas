@@ -49,7 +49,7 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
             viewLifecycleOwner,
             {
                 updateRefreshState(false)
-                showErrorDialog { disposable.add(viewModel.getPosts()) }
+                showErrorDialog { getPosts() }
             }
         )
     }
