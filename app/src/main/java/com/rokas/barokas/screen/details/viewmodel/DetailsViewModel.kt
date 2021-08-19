@@ -22,27 +22,34 @@ class DetailsViewModel @Inject constructor(
 ) : ViewModel() {
     private val mutablePost = MutableLiveData<PostDomain>()
     private val mutableUser = MutableLiveData<UserDomain>()
+    private val mutableError = MutableLiveData<Throwable>()
 
-    fun getScreenDetails(postId: Int): Disposable {
-        return getPostUseCase.getPost(postId)
-            .observeOn(mainScheduler)
-            .subscribe(
-                { result ->
-                    mutablePost.value = result
-                    getUser(result.userId)
-                },
-                { Timber.e(it) }
-            )
-    }
+    fun getScreenDetails(postId: Int): Disposable = getPostUseCase.getPost(postId)
+        .observeOn(mainScheduler)
+        .subscribe(
+            { result ->
+                mutablePost.value = result
+                getUser(result.userId)
+            },
+            {
+                Timber.e(it)
+                mutableError.value = it
+            }
+        )
 
-    fun getUser(userId: Int): Disposable = getUserUseCase.getUser(userId)
+    private fun getUser(userId: Int): Disposable = getUserUseCase.getUser(userId)
         .observeOn(mainScheduler)
         .subscribe(
             { result -> mutableUser.value = result },
-            { Timber.e(it) }
+            {
+                Timber.e(it)
+                mutableError.value = it
+            }
         )
 
     fun getPostLiveData() = mutablePost as LiveData<PostDomain>
 
     fun getUserLiveData() = mutableUser as LiveData<UserDomain>
+
+    fun getErrorLiveData() = mutableError as LiveData<Throwable>
 }

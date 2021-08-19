@@ -28,16 +28,16 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_d
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpPullToRefresh()
-        val postId = getPostId()
-        getScreenDetails(postId)
+        getScreenDetails()
     }
 
     private fun setUpPullToRefresh() {
         binding.refreshLayout.isEnabled = false
     }
 
-    private fun getScreenDetails(postId: Int?) {
-        binding.refreshLayout.isRefreshing = true
+    private fun getScreenDetails() {
+        val postId = getPostId()
+        updateRefreshState(true)
         postId?.let { disposable.add(viewModel.getScreenDetails(postId)) }
     }
 
@@ -67,12 +67,24 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(R.layout.fragment_d
                 hideProgress()
             }
         )
+
+        viewModel.getErrorLiveData().observe(
+            viewLifecycleOwner,
+            {
+                updateRefreshState(false)
+                showErrorDialog { getScreenDetails() }
+            }
+        )
     }
 
     private fun hideProgress() {
         if (finishedLoadingImage && finishedLoadingUser) {
-            binding.refreshLayout.isRefreshing = false
+            updateRefreshState(false)
         }
+    }
+
+    private fun updateRefreshState(isRefreshing: Boolean) {
+        binding.refreshLayout.isRefreshing = isRefreshing
     }
 
     override fun onStop() {
