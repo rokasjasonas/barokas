@@ -16,7 +16,9 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME).build()
+        Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
 
     private const val DB_NAME = "app_database"
 }
