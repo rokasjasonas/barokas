@@ -23,6 +23,7 @@ class PostsLocalRepository @Inject constructor(
             }
         }
         .subscribeOn(ioScheduler)
+        .take(1)
 
     fun getPost(postId: Int): Single<PostDomain> = appDatabase.postsDao.getPost(postId)
         .map { it.toDomain() }

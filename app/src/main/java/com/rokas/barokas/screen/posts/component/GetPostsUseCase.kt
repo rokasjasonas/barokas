@@ -11,7 +11,7 @@ class GetPostsUseCase @Inject constructor(
     private val postsLocalRepository: PostsLocalRepository
 ) {
     fun getPosts(): Observable<List<PostDomain>> = Observable.mergeDelayError(
-        postsLocalRepository.getPosts().take(1),
+        postsLocalRepository.getPosts().onErrorComplete(),
         postsRemoteRepository.getPosts()
             .flatMapCompletable { postsLocalRepository.insertAll(it) }
             .toObservable<List<PostDomain>>()

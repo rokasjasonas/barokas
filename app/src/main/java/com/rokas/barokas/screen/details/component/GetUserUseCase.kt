@@ -11,7 +11,7 @@ class GetUserUseCase @Inject constructor(
     private val usersLocalRepository: UsersLocalRepository
 ) {
     fun getUser(userId: Int): Observable<UserDomain> = Observable.mergeDelayError(
-        usersLocalRepository.getUser(userId),
+        usersLocalRepository.getUser(userId).onErrorComplete(),
         usersRemoteRepository.getUser(userId)
             .flatMapCompletable { usersLocalRepository.insert(it) }
             .toObservable<UserDomain>()
