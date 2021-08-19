@@ -10,11 +10,12 @@ class GetUserUseCase @Inject constructor(
     private val usersRemoteRepository: UsersRemoteRepository,
     private val usersLocalRepository: UsersLocalRepository
 ) {
-    fun getUser(userId: Int): Observable<UserDomain> = Observable.mergeDelayError(
-        usersLocalRepository.getUser(userId).onErrorComplete(),
-        usersRemoteRepository.getUser(userId)
-            .flatMapCompletable { usersLocalRepository.insert(it) }
-            .toObservable<UserDomain>()
-            .take(1)
+    fun getUser(userId: Int): Observable<UserDomain> = Observable.concatDelayError(
+        listOf(
+            usersLocalRepository.getUser(userId).onErrorComplete(),
+            usersRemoteRepository.getUser(userId)
+                .flatMapObservable { usersLocalRepository.insert(it).andThen(Observable.just(it)) }
+                .take(1)
+        )
     )
 }
