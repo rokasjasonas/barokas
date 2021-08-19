@@ -27,9 +27,7 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
         getPosts()
     }
 
-    private fun setUpPullToRefresh() {
-        binding.refreshLayout.setOnRefreshListener { getPosts() }
-    }
+    private fun setUpPullToRefresh() = binding.refreshLayout.setOnRefreshListener { getPosts() }
 
     private fun getPosts() {
         updateRefreshState(true)
@@ -39,10 +37,7 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
     override fun setUpObservers() {
         viewModel.getPostsLiveData().observe(
             viewLifecycleOwner,
-            { posts ->
-                updateRefreshState(false)
-                postsAdapter.updateList(posts)
-            }
+            { posts -> postsAdapter.updateList(posts) }
         )
 
         viewModel.getErrorLiveData().observe(
@@ -51,6 +46,11 @@ class PostsFragment : BaseFragment<FragmentPostsBinding>(R.layout.fragment_posts
                 updateRefreshState(false)
                 showErrorDialog { getPosts() }
             }
+        )
+
+        viewModel.getCompletedLiveData().observe(
+            viewLifecycleOwner,
+            { updateRefreshState(false) }
         )
     }
 

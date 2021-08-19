@@ -19,20 +19,22 @@ class PostsViewModel @Inject constructor(
 ) : ViewModel() {
     private val mutablePosts = MutableLiveData<List<PostDomain>>()
     private val mutableError = MutableLiveData<Throwable>()
+    private val mutableCompleted = MutableLiveData<Int>()
 
-    fun getPosts(): Disposable {
-        return getPostsUseCase.getPosts()
-            .observeOn(mainScheduler)
-            .subscribe(
-                { result -> mutablePosts.value = result },
-                {
-                    Timber.e(it)
-                    mutableError.value = it
-                }
-            )
-    }
+    fun getPosts(): Disposable = getPostsUseCase.getPosts()
+        .observeOn(mainScheduler)
+        .subscribe(
+            { result -> mutablePosts.value = result },
+            {
+                Timber.e(it)
+                mutableError.value = it
+            },
+            { mutableCompleted.value = 1 }
+        )
 
     fun getPostsLiveData() = mutablePosts as LiveData<List<PostDomain>>
 
     fun getErrorLiveData() = mutableError as LiveData<Throwable>
+
+    fun getCompletedLiveData() = mutableCompleted as LiveData<Int>
 }
